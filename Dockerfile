@@ -10,4 +10,4 @@ RUN uv sync
 
 EXPOSE 8501
 
-CMD ["uv", "run", "streamlit", "run", "main.py", "--server.headless", "true", "--server.port", "8501"]
+CMD ["uv", "run", "streamlit", "run", "main.py"]

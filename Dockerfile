@@ -1,13 +1,19 @@
-FROM python:3.12-slim
+FROM alpine:latest
 
-COPY . /app
+ARG PB_VERSION=0.25.8
 
-WORKDIR /app
+# download and unzip PocketBase
+ADD https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip /tmp/pb.zip
+RUN apk add --no-cache unzip && \
+    unzip /tmp/pb.zip -d /pb/
 
-RUN pip install uv
+# uncomment to copy the local pb_migrations dir into the container
+# COPY ./pb_migrations /pb/pb_migrations
 
-RUN uv sync
+# uncomment to copy the local pb_hooks dir into the container
+# COPY ./pb_hooks /pb/pb_hooks
 
-EXPOSE 8501
+EXPOSE 8080
 
-CMD ["uv", "run", "streamlit", "run", "main.py"]
+# start PocketBase
+CMD ["/pb/pocketbase", "serve", "--http=0.0.0.0:8080"]
